@@ -1,0 +1,37 @@
+/* components/Home.css */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home-container h2 {
+  margin-bottom: 20px;
+  color: #343a40;
+}
+
+.time-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  background-color: #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.time-container .date,
+.time-container .time {
+  margin: 5px 0;
+  font-size: 1.2em;
+  color: #495057;
+}
