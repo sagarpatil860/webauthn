@@ -1,12 +1,10 @@
-importScripts("idb-bundle.js");
-self.test();
+const self = this;
 self.importScripts(
   "https://cdn.jsdelivr.net/npm/idb@4.0.5/build/iife/with-async-ittr-min.js"
 );
 
 const STATIC_CACHE = "static-v1";
 const DYNAMIC_CACHE = "dynamic-v1";
-
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -15,6 +13,7 @@ const STATIC_ASSETS = [
   "/logo512.png",
 ];
 
+// eslint-disable-next-line no-undef
 const { openDB } = idb;
 
 const DATABASE_NAME = "todos-db";
@@ -37,23 +36,26 @@ async function initDB() {
 async function handleAPICalls(request) {
   const db = await initDB();
   const url = new URL(request.url);
+  console.log(`Handling API request for: ${url.pathname}`);
   let responseBody;
 
   switch (request.method) {
-    case "GET":
+    case "GET": {
       const items = await db.getAll(STORE_NAME);
       responseBody = JSON.stringify(items);
       return new Response(responseBody, {
         headers: { "Content-Type": "application/json" },
       });
-    case "POST":
+    }
+    case "POST": {
       const newTodo = await request.json();
       await db.add(STORE_NAME, newTodo);
       responseBody = JSON.stringify({ success: true });
       return new Response(responseBody, {
         headers: { "Content-Type": "application/json" },
       });
-    case "PUT":
+    }
+    case "PUT": {
       const id = url.pathname.split("/").pop();
       const updates = await request.json();
       await db.put(STORE_NAME, { id: Number(id), ...updates });
@@ -61,18 +63,21 @@ async function handleAPICalls(request) {
       return new Response(responseBody, {
         headers: { "Content-Type": "application/json" },
       });
-    case "DELETE":
+    }
+    case "DELETE": {
       const deleteId = url.pathname.split("/").pop();
       await db.delete(STORE_NAME, Number(deleteId));
       responseBody = JSON.stringify({ success: true });
       return new Response(responseBody, {
         headers: { "Content-Type": "application/json" },
       });
-    default:
+    }
+    default: {
       responseBody = JSON.stringify({ error: "Unsupported request method" });
       return new Response(responseBody, {
         headers: { "Content-Type": "application/json" },
       });
+    }
   }
 }
 
@@ -88,11 +93,9 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.map((key) => {
-          if (key !== STATIC_CACHE && key !== DYNAMIC_CACHE) {
-            return caches.delete(key);
-          }
-        })
+        keys
+          .filter((key) => key !== STATIC_CACHE && key !== DYNAMIC_CACHE)
+          .map((key) => caches.delete(key))
       );
     })
   );
