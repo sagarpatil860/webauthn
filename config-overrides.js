@@ -19,6 +19,13 @@ module.exports = override(
           from: path.resolve(__dirname, "src/idb-bundle.js"),
           to: "idb-bundle.js",
         },
+        {
+          from: path.resolve(
+            __dirname,
+            "modules/authn/generateRegistrationOptions/generateRegistrationOptions.js"
+          ),
+          to: "generateRegistrationOptions.js",
+        },
       ],
     }),
     new webpack.ProvidePlugin({ idb: "idb" })

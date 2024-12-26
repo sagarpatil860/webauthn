@@ -30,7 +30,7 @@ class AuthService {
       });
       const response = await signUpResult.json();
       console.log("signup data", response);
-      return true;
+      return response;
     } catch (e) {
       return false;
     }

@@ -2,7 +2,7 @@ const self = this;
 self.importScripts(
   "https://cdn.jsdelivr.net/npm/idb@4.0.5/build/iife/with-async-ittr-min.js"
 );
-
+self.importScripts("generateRegistrationOptions.js");
 const STATIC_CACHE = "static-v1";
 const DYNAMIC_CACHE = "dynamic-v1";
 const STATIC_ASSETS = [
@@ -39,20 +39,6 @@ async function initDB() {
     },
   });
 }
-async function initAuthDB() {
-  return openDB(DATABASE_NAME, DATABASE_VERSION, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const store = db.createObjectStore(STORE_NAME, {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-        // store.createIndex("email", "email", { unique: false });
-      }
-    },
-  });
-}
-
 async function handleToDoAPICalls(request) {
   const db = await initDB();
   const url = new URL(request.url);
@@ -122,8 +108,16 @@ async function handleAuthCredAPICalls(request) {
     }
     case "POST": {
       const { username, password } = await request.json();
+      const registrationOptions = await generateRegistrationOptions({
+        email: username,
+      });
+      console.log();
       await db.add(AUTH_CREDENTIALS, { email: username, username, password });
-      const responseBody = JSON.stringify({ success: true });
+      const responseBody = JSON.stringify({
+        success: true,
+        registrationOptions,
+      });
+
       return new Response(responseBody, {
         headers: { "Content-Type": "application/json" },
       });

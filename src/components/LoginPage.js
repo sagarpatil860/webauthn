@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./LoginPage.css";
+import { startRegistration } from "../authn/startRegistration/startRegistration";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -37,10 +38,15 @@ const LoginPage = () => {
     }
   };
 
-  const handleSignUp = () => {
-    signup(username, password);
+  const handleSignUp = async () => {
+    const response = await signup(username, password);
+    if (response?.registrationOptions) {
+      const clientRegistartion = await startRegistration(
+        response?.registrationOptions
+      );
+      console.log("clientRegistartion", clientRegistartion);
+    }
   };
-
   return (
     <div className="login-container">
       <h2>Login Page</h2>
