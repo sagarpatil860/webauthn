@@ -63,7 +63,6 @@ function ToDo() {
     const data = await readFromFile();
     if (data) {
       await restoreData(data, setRestoreProgress);
-      console.log("Restore completed");
     }
   };
   useEffect(() => {

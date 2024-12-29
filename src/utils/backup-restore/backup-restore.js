@@ -69,7 +69,6 @@ export async function saveToFile(data, setBackupProgress) {
     }
 
     await writableStream.close();
-    console.log("File saved successfully:", newFileName);
 
     return fileHandle;
   } catch (error) {

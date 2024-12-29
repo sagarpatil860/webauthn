@@ -27,7 +27,6 @@ class AuthServiceWebAuthn {
       };
 
       const credential = await navigator.credentials.create({ publicKey });
-      console.log("Credential created:", credential);
 
       // Send the credential to the server for registration
       // (Assume we have an API endpoint for registering WebAuthn credentials)
@@ -64,7 +63,6 @@ class AuthServiceWebAuthn {
       };
 
       const assertion = await navigator.credentials.get({ publicKey });
-      console.log("Assertion created:", assertion);
 
       // Send the assertion to the server for verification
       // (Assume we have an API endpoint for verifying WebAuthn assertions)

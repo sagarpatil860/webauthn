@@ -1,5 +1,4 @@
 export async function startRegistration(registrationOptions) {
-  console.log("registrationOptions in authn startreg", registrationOptions);
   const clientRegistartion = await navigator.credentials.create({
     publicKey: {
       ...registrationOptions,

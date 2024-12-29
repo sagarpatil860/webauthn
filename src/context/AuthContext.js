@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(result);
     return result;
   };
-  const loginWithWebAuthn = async () => {
-    const result = await AuthServiceWebAuthn.authenticate();
+  const loginWithWebAuthn = async (username) => {
+    const result = await AuthService.loginWithWebAuthn(username);
     setIsAuthenticated(result);
     return result;
   };
@@ -31,6 +31,11 @@ export const AuthProvider = ({ children }) => {
     return result;
   };
 
+  const signupVerify = (verifyOptions) => {
+    const result = AuthService.signupVerify(verifyOptions);
+    return result;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -41,6 +46,7 @@ export const AuthProvider = ({ children }) => {
         setRedirectPath,
         loginWithWebAuthn,
         signup,
+        signupVerify,
       }}
     >
       {children}

@@ -13,7 +13,17 @@ class AuthService {
     }
     return false;
   }
-
+  async loginWithWebAuthn(username) {
+    try {
+      const signUpResult = await fetch(
+        `/api/auth/login-init?email=${username}`
+      );
+      const response = await signUpResult.json();
+      return response;
+    } catch (e) {
+      return false;
+    }
+  }
   logout() {
     this.isAuthenticated = false;
   }
@@ -29,8 +39,20 @@ class AuthService {
         body: JSON.stringify({ username, password }),
       });
       const response = await signUpResult.json();
-      console.log("signup data", response);
       return response;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async signupVerify(verifyOptions) {
+    try {
+      const signupVerifyResult = await fetch("/api/auth/signup-verify", {
+        method: "post",
+        body: JSON.stringify(verifyOptions),
+      });
+      const response = await signupVerifyResult.json();
+      return true;
     } catch (e) {
       return false;
     }

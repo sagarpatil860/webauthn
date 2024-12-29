@@ -8,7 +8,8 @@ import { startRegistration } from "../authn/startRegistration/startRegistration"
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login, redirectPath, loginWithWebAuthn, signup } = useAuth();
+  const { login, redirectPath, loginWithWebAuthn, signup, signupVerify } =
+    useAuth();
   const navigate = useNavigate();
   const handleLogin = () => {
     if (login(username, password)) {
@@ -23,9 +24,23 @@ const LoginPage = () => {
       alert("Invalid credentials");
     }
   };
-
+  const webAuthnInit = async (user_email) => {
+    const challengeResponse = await loginWithWebAuthn(user_email);
+    console.log("challengeResponse in login page", challengeResponse);
+    const clientPasskey = await navigator.credentials.get({
+      publicKey: {
+        ...challengeResponse,
+        challenge: new Uint8Array(Object.values(challengeResponse.challenge)),
+        user: {
+          ...challengeResponse.user,
+          id: new Uint8Array(Object.values(challengeResponse.user.id)),
+        },
+      },
+    });
+    console.log("clientPasskey", clientPasskey);
+  };
   const handleWebAuthnLogin = async () => {
-    if (await loginWithWebAuthn()) {
+    if (await webAuthnInit(username)) {
       if (redirectPath && redirectPath !== "/login") {
         const pathToNavigate = redirectPath !== "/login" ? redirectPath : "/";
         // window.history.replaceState(null, null, pathToNavigate);
@@ -40,11 +55,29 @@ const LoginPage = () => {
 
   const handleSignUp = async () => {
     const response = await signup(username, password);
+    console.log("challenge from server", {
+      ...response.registrationOptions,
+      challenge: new Uint8Array(
+        Object.values(response.registrationOptions.challenge)
+      ),
+      user: {
+        ...response.registrationOptions.user,
+        id: new Uint8Array(Object.values(response.registrationOptions.user.id)),
+      },
+    });
     if (response?.registrationOptions) {
-      const clientRegistartion = await startRegistration(
+      const clientRegistration = await startRegistration(
         response?.registrationOptions
       );
-      console.log("clientRegistartion", clientRegistartion);
+      console.log("client registration", {
+        email: username,
+        clientRegistration,
+      });
+      const verificationResponse = await signupVerify({
+        email: username,
+        clientRegistration,
+      });
+      alert(verificationResponse);
     }
   };
   return (

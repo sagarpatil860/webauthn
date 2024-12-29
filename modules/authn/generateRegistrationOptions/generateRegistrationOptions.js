@@ -79,7 +79,7 @@ async function generateRegistrationOptions({ email }) {
       { type: "public-key", alg: -257 }, // RS256
     ],
     authenticatorSelection: {
-      // authenticatorAttachment: "platform",
+      authenticatorAttachment: "cross-platform",
       residentKey: "required",
       userVerification: "preferred",
     },
